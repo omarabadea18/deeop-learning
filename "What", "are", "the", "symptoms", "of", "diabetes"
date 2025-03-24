@@ -1,0 +1,40 @@
+import torch
+import torch.nn.functional as F
+
+# Define the input sentence (toy example)
+sentence = ["What", "are", "the", "symptoms", "of", "diabetes", "?"]
+vocab_size = 10000  # Assume a vocabulary size
+embedding_dim = 8   # Small embedding size for illustration
+
+# Randomly initialized embeddings for each token
+torch.manual_seed(42)
+embeddings = torch.rand((len(sentence), embedding_dim))  # (seq_length, d_model)
+
+# Self-Attention Mechanism
+def self_attention(embeddings):
+    d_k = embeddings.shape[1]  # Embedding dimension
+
+    # Create Q, K, V matrices as learned linear transformations
+    W_q = torch.rand((d_k, d_k))
+    W_k = torch.rand((d_k, d_k))
+    W_v = torch.rand((d_k, d_k))
+
+    Q = embeddings @ W_q
+    K = embeddings @ W_k
+    V = embeddings @ W_v
+
+    # Compute attention scores
+    scores = Q @ K.T / torch.sqrt(torch.tensor(d_k))  # Scaled dot product
+    attention_weights = F.softmax(scores, dim=-1)  # Softmax normalization
+
+    # Compute self-attention output
+    output = attention_weights @ V
+
+    return attention_weights, output
+
+# Compute self-attention
+attention_scores, attention_output = self_attention(embeddings)
+
+# Print results
+print("Attention Scores:\n", attention_scores)
+print("\nSelf-Attention Output:\n", attention_output)
